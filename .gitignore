@@ -1,0 +1,17 @@
+# Python Virtual Environment
+.venv/
+__pycache__/
+transkript-agent/__pycache__/
+transkript-agent/tests/__pycache__/
+
+# OS files
+.DS_Store
+
+# Temporary Transcripts / Drafts / Local configs
+transcripts/*
+!transcripts/.gitkeep
+transkript-agent/drafts/*
+!transkript-agent/drafts/.gitkeep
+*.local
+.env
+.env.local

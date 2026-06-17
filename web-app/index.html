@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transkript-Redaktor Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo-area">
+                <span class="logo-icon">✨</span>
+                <div>
+                    <h1>Transkript-Redaktor</h1>
+                    <p class="subtitle">YouTube-Wissensdateien im Handumdrehen erzeugen</p>
+                </div>
+            </div>
+            <div class="api-key-panel">
+                <label for="apiKey">Gemini API Key:</label>
+                <div class="input-wrapper">
+                    <input type="password" id="apiKey" placeholder="AIzaSy..." autocomplete="off">
+                    <button id="toggleApiKey" title="API Key anzeigen/verbergen">👁️</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="grid-layout">
+            <!-- Left Panel: Setup & Input -->
+            <section class="card panel-setup">
+                <h2>1. Setup & Metadaten</h2>
+                <div class="form-group">
+                    <label for="videoUrl">YouTube URL:</label>
+                    <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="videoTitle">Video-Titel:</label>
+                        <input type="text" id="videoTitle" placeholder="Titel des Videos">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="videoDesc">Kurz-Beschreibung:</label>
+                    <textarea id="videoDesc" rows="2" placeholder="Kurze Zusammenfassung für den Cardlink..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="modelSelect">Gemini Modell:</label>
+                        <select id="modelSelect">
+                            <option value="gemini-1.5-flash">Gemini 1.5 Flash (Schnell & Sparsam)</option>
+                            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Beste Qualität & Tiefe)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modeSelect">Arbeitsmodus:</label>
+                        <select id="modeSelect">
+                            <option value="translate">Aus Fremdsprache ins Deutsche übersetzen</option>
+                            <option value="redact">Deutsches Transkript redigieren & säubern</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <h2>2. Rohtranskript einfügen</h2>
+                    <p class="input-hint">Kopiere das Transkript von YouTube und füge es hier ein:</p>
+                    <textarea id="rawTranscript" rows="12" placeholder="**00:00** Hallo...&#10;**00:15** ..."></textarea>
+                </div>
+
+                <button id="processBtn" class="btn btn-primary">
+                    <span class="btn-text">Verarbeitung starten</span>
+                    <span class="spinner hidden"></span>
+                </button>
+            </section>
+
+            <!-- Right Panel: Editor Workspace -->
+            <section class="card panel-editor">
+                <div class="editor-header">
+                    <h2>3. Editor & Vorschau</h2>
+                    <div class="actions">
+                        <button id="downloadBtn" class="btn btn-secondary" disabled>Markdown herunterladen</button>
+                    </div>
+                </div>
+
+                <div class="editor-container">
+                    <textarea id="markdownEditor" placeholder="# Deutscher Titel&#10;&#10;Hier erscheint die fertig formatierte Datei..."></textarea>
+                </div>
+
+                <!-- Validation Linter Panel -->
+                <div class="linter-panel">
+                    <h3>🔍 Qualitätsprüfung (Linter)</h3>
+                    <ul id="linterErrors" class="linter-list">
+                        <li class="info">Warte auf Eingabe oder Verarbeitung...</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>Transkript-Redaktor &copy; 2026. Komplett lokal und serverlos auf GitHub Pages.</p>
+        </div>
+    </footer>
+
+    <!-- Gen AI SDK CDN and App Logic -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
