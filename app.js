@@ -290,9 +290,6 @@ processBtn.addEventListener("click", async () => {
     processBtn.querySelector(".spinner").classList.remove("hidden");
     
     try {
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: modelName });
-        
         let systemInstruction = `Du bist ein hochpräziser Übersetzer und Redakteur für Video-Transkripte.
 DEINE REGELN:
 1. Kürze den Text auf keinen Fall. Erstelle KEINE Zusammenfassung oder kompakte Wissensnotiz. Halte mindestens 80% des Inhaltsumfangs.
@@ -310,6 +307,12 @@ DEINE REGELN:
             systemInstruction += "\n9. Der Text ist bereits deutsch. Redigiere ihn sauber auf Deutsch (Sätze glätten, Füllwörter raus, Grammatik korrigieren), aber kürze nichts inhaltlich.";
         }
 
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ 
+            model: modelName,
+            systemInstruction: systemInstruction 
+        });
+
         const prompt = `Hier ist das Rohtranskript zum Verarbeiten:
 ${rawText}
 
@@ -318,7 +321,6 @@ Bitte erstelle daraus den finalen Text ab dem H1-Titel (z. B. "# [Deutscher Tite
         const result = await model.generateContent({
             contents: [{ role: "user", parts: [{ text: prompt }] }],
             generationConfig: {
-                systemInstruction: systemInstruction,
                 temperature: 0.1
             }
         });
