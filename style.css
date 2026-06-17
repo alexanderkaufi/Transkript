@@ -233,6 +233,27 @@ h1 {
     transition: var(--transition-smooth);
 }
 
+.api-delete-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 12px;
+    transition: var(--transition-smooth);
+}
+
+.api-delete-btn:hover {
+    background-color: var(--linter-error-bg);
+    border-color: var(--linter-error-border);
+    color: var(--linter-error-text);
+}
+
 .theme-toggle-btn:hover {
     background-color: var(--bg-input);
     border-color: var(--border-hover);

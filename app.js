@@ -14,6 +14,7 @@ const downloadBtn = document.getElementById("downloadBtn");
 const markdownEditor = document.getElementById("markdownEditor");
 const linterErrorsList = document.getElementById("linterErrors");
 const themeToggleBtn = document.getElementById("themeToggle");
+const deleteApiKeyBtn = document.getElementById("deleteApiKey");
 
 // State
 let isApiKeyVisible = false;
@@ -46,6 +47,15 @@ if (storedKey) {
 // Save API Key on input change
 apiKeyInput.addEventListener("input", () => {
     localStorage.setItem("gemini_api_key", apiKeyInput.value.trim());
+});
+
+// Delete API Key from localStorage
+deleteApiKeyBtn.addEventListener("click", () => {
+    if (confirm("Möchtest du deinen Gemini-API-Schlüssel wirklich aus dem Browser-Speicher löschen?")) {
+        apiKeyInput.value = "";
+        localStorage.removeItem("gemini_api_key");
+        alert("API-Schlüssel gelöscht!");
+    }
 });
 
 // 3. Video URL Parser & Auto-Fetch Title (CORS-free noembed.com)
