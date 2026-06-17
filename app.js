@@ -13,11 +13,24 @@ const processBtn = document.getElementById("processBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 const markdownEditor = document.getElementById("markdownEditor");
 const linterErrorsList = document.getElementById("linterErrors");
+const themeToggleBtn = document.getElementById("themeToggle");
 
 // State
 let isApiKeyVisible = false;
 
-// 1. API Key show/hide and persistence
+// 1. Theme Toggle & Persistence (Apple style)
+const htmlElement = document.documentElement;
+const savedTheme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+htmlElement.setAttribute("data-theme", savedTheme);
+
+themeToggleBtn.addEventListener("click", () => {
+    const currentTheme = htmlElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    htmlElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+});
+
+// 2. API Key show/hide and persistence
 toggleApiKeyBtn.addEventListener("click", () => {
     isApiKeyVisible = !isApiKeyVisible;
     apiKeyInput.type = isApiKeyVisible ? "text" : "password";
@@ -35,7 +48,7 @@ apiKeyInput.addEventListener("input", () => {
     localStorage.setItem("gemini_api_key", apiKeyInput.value.trim());
 });
 
-// 2. Video URL Parser (Extract Video ID)
+// 3. Video URL Parser & Auto-Fetch Title (CORS-free noembed.com)
 function extractVideoId(url) {
     const trimmed = url.trim();
     if (/^[\w-]{11}$/.test(trimmed)) {
@@ -65,6 +78,28 @@ function extractVideoId(url) {
     }
     return null;
 }
+
+videoUrlInput.addEventListener("input", async () => {
+    const url = videoUrlInput.value.trim();
+    const videoId = extractVideoId(url);
+    if (videoId) {
+        try {
+            // Fetch video title via noembed.com oEmbed proxy (which allows CORS)
+            const response = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.title) {
+                    videoTitleInput.value = data.title;
+                    if (!videoDescInput.value.trim() && data.author_name) {
+                        videoDescInput.value = `Video von ${data.author_name}`;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Fehler beim Laden der YouTube Metadaten:", error);
+        }
+    }
+});
 
 // 3. JS Linter
 function runLinter(content) {

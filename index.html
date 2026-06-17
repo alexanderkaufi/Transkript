@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transkript-Redaktor Pro</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
+    <header class="apple-header">
         <div class="container header-container">
             <div class="logo-area">
                 <span class="logo-icon">✨</span>
@@ -19,12 +19,15 @@
                     <p class="subtitle">YouTube-Wissensdateien im Handumdrehen erzeugen</p>
                 </div>
             </div>
-            <div class="api-key-panel">
-                <label for="apiKey">Gemini API Key:</label>
-                <div class="input-wrapper">
-                    <input type="password" id="apiKey" placeholder="AIzaSy..." autocomplete="off">
-                    <button id="toggleApiKey" title="API Key anzeigen/verbergen">👁️</button>
+            <div class="header-controls">
+                <div class="api-key-panel">
+                    <label for="apiKey">Gemini API Key:</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="apiKey" placeholder="AIzaSy..." autocomplete="off">
+                        <button id="toggleApiKey" title="API Key anzeigen/verbergen">👁️</button>
+                    </div>
                 </div>
+                <button id="themeToggle" class="theme-toggle-btn" title="Farbschema wechseln">🌓</button>
             </div>
         </div>
     </header>
@@ -33,15 +36,18 @@
         <div class="grid-layout">
             <!-- Left Panel: Setup & Input -->
             <section class="card panel-setup">
-                <h2>1. Setup & Metadaten</h2>
+                <div class="section-title-wrapper">
+                    <span class="badge">1</span>
+                    <h2>Setup & Metadaten</h2>
+                </div>
                 <div class="form-group">
-                    <label for="videoUrl">YouTube URL:</label>
+                    <label for="videoUrl">YouTube URL / Video-ID:</label>
                     <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="videoTitle">Video-Titel:</label>
-                        <input type="text" id="videoTitle" placeholder="Titel des Videos">
+                        <input type="text" id="videoTitle" placeholder="Titel des Videos (wird automatisch geladen)">
                     </div>
                 </div>
                 <div class="form-group">
@@ -65,8 +71,11 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top: 1.5rem;">
-                    <h2>2. Rohtranskript einfügen</h2>
+                <div class="form-group raw-transcript-group">
+                    <div class="section-title-wrapper">
+                        <span class="badge">2</span>
+                        <h2>Rohtranskript einfügen</h2>
+                    </div>
                     <p class="input-hint">Kopiere das Transkript von YouTube und füge es hier ein:</p>
                     <textarea id="rawTranscript" rows="12" placeholder="**00:00** Hallo...&#10;**00:15** ..."></textarea>
                 </div>
@@ -80,7 +89,10 @@
             <!-- Right Panel: Editor Workspace -->
             <section class="card panel-editor">
                 <div class="editor-header">
-                    <h2>3. Editor & Vorschau</h2>
+                    <div class="section-title-wrapper">
+                        <span class="badge">3</span>
+                        <h2>Editor & Vorschau</h2>
+                    </div>
                     <div class="actions">
                         <button id="downloadBtn" class="btn btn-secondary" disabled>Markdown herunterladen</button>
                     </div>
@@ -103,7 +115,7 @@
 
     <footer>
         <div class="container footer-content">
-            <p>Transkript-Redaktor &copy; 2026. Komplett lokal und serverlos auf GitHub Pages.</p>
+            <p>Transkript-Redaktor &copy; 2026. Komplett lokal und serverlos.</p>
         </div>
     </footer>
 
