@@ -258,6 +258,35 @@ function updateLinterUI() {
 // Attach linter to editor input
 markdownEditor.addEventListener("input", updateLinterUI);
 
+// Helper: Call Gemini with exponential backoff on 503/high-demand errors
+async function generateContentWithRetry(model, contents, generationConfig, maxRetries = 5) {
+    let delay = 2000; // start with 2 seconds
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            const result = await model.generateContent({
+                contents: contents,
+                generationConfig: generationConfig
+            });
+            return result;
+        } catch (error) {
+            const errorMsg = error.message || "";
+            const is503 = errorMsg.includes("503") || 
+                          errorMsg.toLowerCase().includes("demand") || 
+                          errorMsg.toLowerCase().includes("overloaded") || 
+                          errorMsg.toLowerCase().includes("unavailable");
+            
+            if (is503 && attempt < maxRetries - 1) {
+                console.warn(`Verbindungsversuch ${attempt + 1} fehlgeschlagen (Server überlastet). Erneuter Versuch in ${delay / 1000}s...`);
+                processBtn.querySelector(".btn-text").textContent = `Server ausgelastet... Versuch ${attempt + 2}/${maxRetries} in ${delay / 1000}s`;
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 1.5; // exponential backoff factor
+            } else {
+                throw error;
+            }
+        }
+    }
+}
+
 // 4. Processing logic (Call Gemini API)
 processBtn.addEventListener("click", async () => {
     const apiKey = apiKeyInput.value.trim();
@@ -318,12 +347,11 @@ ${rawText}
 
 Bitte erstelle daraus den finalen Text ab dem H1-Titel (z. B. "# [Deutscher Titel]") gefolgt vom Inhaltsverzeichnis und den Kapiteln. Erzeuge KEINE Cardlinks oder Iframes, das übernehme ich selbst.`;
 
-        const result = await model.generateContent({
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
-            generationConfig: {
-                temperature: 0.1
-            }
-        });
+        const result = await generateContentWithRetry(
+            model,
+            [{ role: "user", parts: [{ text: prompt }] }],
+            { temperature: 0.1 }
+        );
         
         const responseText = result.response.text();
         
